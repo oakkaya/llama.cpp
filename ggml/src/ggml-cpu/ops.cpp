@@ -6381,8 +6381,8 @@ static void ggml_compute_forward_im2col_f32(
     const int64_t OH = is_2D ? ne2 : 1;
     const int64_t OW = ne1;
 
-    int ofs0 = is_2D ? nb13 : nb12;
-    int ofs1 = is_2D ? nb12 : nb11;
+    int64_t ofs0 = is_2D ? nb13 : nb12;
+    int64_t ofs1 = is_2D ? nb12 : nb11;
 
     GGML_ASSERT(nb10 == sizeof(float));
 
@@ -6457,8 +6457,8 @@ static void ggml_compute_forward_im2col_f16(
     const int64_t OH = is_2D ? ne2 : 1;
     const int64_t OW = ne1;
 
-    int ofs0 = is_2D ? nb13 : nb12;
-    int ofs1 = is_2D ? nb12 : nb11;
+    int64_t ofs0 = is_2D ? nb13 : nb12;
+    int64_t ofs1 = is_2D ? nb12 : nb11;
 
     GGML_ASSERT(nb10 == ggml_type_size(src1->type));
 
