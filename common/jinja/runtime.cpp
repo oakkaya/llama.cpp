@@ -739,7 +739,11 @@ value macro_statement::execute_impl(context & ctx) {
     std::string name = cast_stmt<identifier>(this->name)->val;
 
     const func_handler func = [this, name](const func_args & args) -> value {
+        if (args.ctx.call_depth >= context::max_call_depth) {
+            throw std::runtime_error("Maximum macro call depth (" + std::to_string(context::max_call_depth) + ") exceeded in '" + name + "'");
+        }
         context macro_ctx(args.ctx); // new scope for macro execution
+        macro_ctx.call_depth = args.ctx.call_depth + 1;
 
         bind_parameters(name, this->args, args, macro_ctx);
 
@@ -770,7 +774,11 @@ value call_statement::execute_impl(context & ctx) {
     context caller_ctx(ctx); // new scope for caller execution
 
     const func_handler func = [this, caller_ctx = std::move(caller_ctx)](const func_args & args) -> value {
+        if (args.ctx.call_depth >= context::max_call_depth) {
+            throw std::runtime_error("Maximum call depth (" + std::to_string(context::max_call_depth) + ") exceeded");
+        }
         context block_ctx(caller_ctx); // new scope for block execution
+        block_ctx.call_depth = args.ctx.call_depth + 1;
 
         bind_parameters("caller", this->caller_args, args, block_ctx);
 

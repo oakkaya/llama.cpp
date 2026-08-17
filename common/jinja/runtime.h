@@ -60,6 +60,9 @@ struct context {
 
     visitor_fn visitor;
 
+    static constexpr int max_call_depth = 100;
+    int call_depth = 0;
+
     // src is optional, used for error reporting
     context(std::string src = "") : src(std::make_shared<std::string>(std::move(src))) {
         env = mk_val<value_object>();
@@ -83,6 +86,7 @@ struct context {
         current_time = parent.current_time;
         is_get_stats = parent.is_get_stats;
         src = parent.src;
+        call_depth = parent.call_depth;
     }
 
     value get_val(const std::string & name) {
